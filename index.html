@@ -6,6 +6,126 @@
     <title>Todo List</title>
 </head>
 <body>
+
+    <div id="titolo">
+        <h1>TITOLO</h1>
+    </div>
+
+    <div id="sezioneNuovo">
+        <input type="date" id="dataTask">
+        <input type="text" id="descrizioneTask">
+        <button id="pulsanteAggiungi">Aggiungi</button>
+    </div>
+
+    <div id="sezioneInProgress">
+        <h1>DA COMPLETARE</h1>
+        <ul id="listaDaCompletare">
+           
+        
+        </ul>
+    </div>
+
+    <div id="sezioneCompletati">
+        <h1>COMPLETATI</h1>
+    </div>
+
+<script>
+// code da prendere nel dom
+let listaDaCompletare = document.getElementById('listaDaCompletare');
+
+//definito la struttura dell'oggetto per le righe che chiamerò task
+class task {
+    constructor(idt, data, descrizione){
+        this.idt = idt;
+        this.data = data;
+        this.descrizione = descrizione;
+    }
+};
+
+//array per contenere i tasks
+let tasks =[];
+
+//aggiornare la voce da completare
+function aggiornaDaCompletare(){
     
+    tasks = JSON.parse(localStorage.getItem("tasks"))|| []; //vedo il localStorage se è vuoto lo inizializzo come vuoto
+    listaDaCompletare.innerHTML = ""; //devo svuotare sempre la lista prima di aggiornarla per evitare doppioni
+    for ( let i = 0; i < tasks.length; i++ ){ //ciclo per prendere tutti i dati dell'array e stamparli
+        let righe = document.createElement("li");
+        let elimina = document.createElement("button");
+        let conferma = document.createElement("button");
+
+        conferma.textContent = "conferma";
+        elimina.textContent = "elimina";
+        elimina.className ="elimina";
+        elimina.value = `${tasks[i].idt}`; //passo l'ID della riga in modo da identificarla
+        righe.textContent = `${tasks[i].data}  ${tasks[i].descrizione}` ;
+
+
+        righe.appendChild(elimina);
+        righe.appendChild(conferma);
+        listaDaCompletare.appendChild(righe);
+    };
+};
+aggiornaDaCompletare();
+
+//pulsante per aggiungere
+const pulsanteAggiungi = document.getElementById("pulsanteAggiungi"); //preso pulsante principale per aggiungere
+pulsanteAggiungi.addEventListener('click', ()=> { //ascoltato il click su aggiungi
+   
+    //genero l'id
+    let data = new Date();
+    let giorno, mese, anno, ora, minuti, secondi, mSecondi;
+    giorno = data.getDate();
+    mese = data.getMonth() + 1;
+    anno = data.getFullYear();
+    ora = data.getHours();
+    minuti = data.getMinutes();
+    secondi = data.getSeconds();
+    mSecondi = data.getMilliseconds();
+
+    let idt =`${giorno}${mese}${anno}${ora}${minuti}${secondi}${mSecondi}`;
+    // console.log(idt);
+
+    //prendo i valori dalla data e della decrizione
+    let dataTask = document.getElementById("dataTask").value;// prendo il valore della data
+    let descrizioneTask = document.getElementById("descrizioneTask").value;//prendo il valore della descrizione
+    if (descrizioneTask != ''){ //controllo se la decrizione è valorizzata
+        // presi i valori li passo al costruttore
+        let newTask = new task (idt, dataTask, descrizioneTask);
+        // e aggiungo il nuovo task all'array dei task
+        tasks.push(newTask);
+        //salvare in localStorage convertendo l'array in stringa
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        //riprendo i dati del local storage e li traduto da stringa a array
+        tasks = JSON.parse(localStorage.getItem("tasks"));
+        
+        //funzione per aggiorare le righe da completare
+        aggiornaDaCompletare();
+
+        
+    } else { //se la descrizione è vuota
+        alert('Almeno la descrizione deve essere valorizzata');
+    }
+});
+
+let pulsantiNelBody = document.querySelector("body"); //ascolto tutti i pulsanti nel body
+pulsantiNelBody.addEventListener("click", (e)=>{
+    // console.log(e.target.className); //per puntare al nome della classe del clic
+    // console.log(e.target.value); //per puntare al valore
+
+    switch (e.target.className){
+        case "elimina":
+            console.log('elimino...');
+            break;
+        default:
+            console.log('non faccio nulla');
+    }
+})
+
+
+</script>
+
+
 </body>
 </html>

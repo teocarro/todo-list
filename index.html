@@ -31,7 +31,10 @@
 
 <script>
 // code da prendere nel dom
-let listaDaCompletare = document.getElementById('listaDaCompletare');
+let listaDaCompletare = document.getElementById('listaDaCompletare');// prendo l'input della sez. DA COMPLETARE
+let inputDescrizione = document.getElementById("descrizioneTask"); //prendo l'input della descrizione
+let inputData= document.getElementById("dataTask"); //prendo l'input di data
+let pulsantiNelBody = document.querySelector("body"); //ascolto tutti i pulsanti nel body
 
 //definito la struttura dell'oggetto per le righe che chiamerò task
 class task {
@@ -69,6 +72,13 @@ function aggiornaDaCompletare(){
 };
 aggiornaDaCompletare();
 
+        //salvare in localStorage convertendo l'array in stringa
+        function salvaInLocalStorage(){
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            //riprendo i dati del local storage e li traduto da stringa a array
+            tasks = JSON.parse(localStorage.getItem("tasks"));
+        };
+
 //pulsante per aggiungere
 const pulsanteAggiungi = document.getElementById("pulsanteAggiungi"); //preso pulsante principale per aggiungere
 pulsanteAggiungi.addEventListener('click', ()=> { //ascoltato il click su aggiungi
@@ -88,38 +98,48 @@ pulsanteAggiungi.addEventListener('click', ()=> { //ascoltato il click su aggiun
     // console.log(idt);
 
     //prendo i valori dalla data e della decrizione
-    let dataTask = document.getElementById("dataTask").value;// prendo il valore della data
-    let descrizioneTask = document.getElementById("descrizioneTask").value;//prendo il valore della descrizione
+    let dataTask = inputData.value;// prendo il valore della data
+    let descrizioneTask = inputDescrizione.value;//prendo il valore della descrizione
     if (descrizioneTask != ''){ //controllo se la decrizione è valorizzata
         // presi i valori li passo al costruttore
         let newTask = new task (idt, dataTask, descrizioneTask);
         // e aggiungo il nuovo task all'array dei task
         tasks.push(newTask);
-        //salvare in localStorage convertendo l'array in stringa
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-        //riprendo i dati del local storage e li traduto da stringa a array
-        tasks = JSON.parse(localStorage.getItem("tasks"));
-        
+        salvaInLocalStorage();
         //funzione per aggiorare le righe da completare
         aggiornaDaCompletare();
-
+        inputDescrizione.value = "";
+        inputData.value = "";
+        
+        
         
     } else { //se la descrizione è vuota
         alert('Almeno la descrizione deve essere valorizzata');
     }
 });
 
-let pulsantiNelBody = document.querySelector("body"); //ascolto tutti i pulsanti nel body
 pulsantiNelBody.addEventListener("click", (e)=>{
     // console.log(e.target.className); //per puntare al nome della classe del clic
     // console.log(e.target.value); //per puntare al valore
 
     switch (e.target.className){
-        case "elimina":
-            console.log('elimino...');
+        //ELIMINARE LE RIGHE
+        case "elimina": // devo prendere l'id passare tutti gli id dell'array e in quello corretto elimino
+            let nuovoArrayTemporaneo =[];
+            let idtEntita = e.target.value;
+            for (i=0; i<tasks.length; i++){
+                if (idtEntita != tasks[i].idt){
+                    nuovoArrayTemporaneo.push(tasks[i]);
+                } else {
+                    // console.log("non aggiungo...");
+                }
+            };
+            tasks = nuovoArrayTemporaneo;
+            salvaInLocalStorage()
+            aggiornaDaCompletare();
             break;
         default:
-            console.log('non faccio nulla');
+            // console.log('non faccio nulla');
     }
 })
 

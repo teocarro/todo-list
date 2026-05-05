@@ -19,9 +19,10 @@
 
     <div id="sezioneInProgress">
         <h1>DA COMPLETARE</h1>
+
+        <button id="intestazioneData" title="clicca per ordinare in modo crescente/decrescente">DATA</button><span id="intestazioneDescrizione">Descrizione TASK</span>
+
         <ul id="listaDaCompletare">
-           
-        
         </ul>
     </div>
 
@@ -33,8 +34,12 @@
 // code da prendere nel dom
 let listaDaCompletare = document.getElementById('listaDaCompletare');// prendo l'input della sez. DA COMPLETARE
 let inputDescrizione = document.getElementById("descrizioneTask"); //prendo l'input della descrizione
+let intestazioneData = document.getElementById("intestazioneData");
+let intestazioneDescrizione = document.getElementById("intestazioneDescrizione");
 let inputData= document.getElementById("dataTask"); //prendo l'input di data
 let pulsantiNelBody = document.querySelector("body"); //ascolto tutti i pulsanti nel body
+let ordineDataCrescente = true; //controllare l'ordinamento crescente
+
 
 //definito la struttura dell'oggetto per le righe che chiamerò task
 class task {
@@ -120,7 +125,7 @@ pulsanteAggiungi.addEventListener('click', ()=> { //ascoltato il click su aggiun
 
 pulsantiNelBody.addEventListener("click", (e)=>{
     // console.log(e.target.className); //per puntare al nome della classe del clic
-    // console.log(e.target.value); //per puntare al valore
+    // console.log(e.target.id); 
 
     switch (e.target.className){
         //ELIMINARE LE RIGHE
@@ -140,6 +145,22 @@ pulsantiNelBody.addEventListener("click", (e)=>{
             break;
         default:
             // console.log('non faccio nulla');
+    }
+
+    switch (e.target.id){
+        case "intestazioneData":
+            if (ordineDataCrescente) {
+                tasks.sort((a, b) => a.data.localeCompare(b.data));
+            } else {
+                tasks.sort((a, b) => b.data.localeCompare(a.data));
+            }
+
+            ordineDataCrescente = !ordineDataCrescente;
+
+            salvaInLocalStorage();
+            aggiornaDaCompletare();
+            break;
+        break;
     }
 })
 

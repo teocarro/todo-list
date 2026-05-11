@@ -52,6 +52,10 @@ class task {
 
 //array per contenere i tasks
 let tasks =[];
+//array per contenere i tasks
+let tasksCompletati =[];
+// array temporaneo
+let nuovoArrayTemporaneo =[];
 
 //aggiornare la voce da completare
 function aggiornaDaCompletare(){
@@ -64,6 +68,9 @@ function aggiornaDaCompletare(){
         let conferma = document.createElement("button");
 
         conferma.textContent = "conferma";
+        conferma.className ="conferma";
+        conferma.value = `${tasks[i].idt}`;
+
         elimina.textContent = "elimina";
         elimina.className ="elimina";
         elimina.value = `${tasks[i].idt}`; //passo l'ID della riga in modo da identificarla
@@ -80,8 +87,10 @@ aggiornaDaCompletare();
         //salvare in localStorage convertendo l'array in stringa
         function salvaInLocalStorage(){
             localStorage.setItem("tasks", JSON.stringify(tasks));
+            localStorage.setItem("tasksCompletati", JSON.stringify(tasksCompletati));
             //riprendo i dati del local storage e li traduto da stringa a array
             tasks = JSON.parse(localStorage.getItem("tasks"));
+            tasksCompletati = JSON.parse(localStorage.getItem("tasksCompletati"));
         };
 
 //pulsante per aggiungere
@@ -126,11 +135,12 @@ pulsanteAggiungi.addEventListener('click', ()=> { //ascoltato il click su aggiun
 pulsantiNelBody.addEventListener("click", (e)=>{
     // console.log(e.target.className); //per puntare al nome della classe del clic
     // console.log(e.target.id); 
+    // console.log(e.target.className);
 
     switch (e.target.className){
+        
         //ELIMINARE LE RIGHE
         case "elimina": // devo prendere l'id passare tutti gli id dell'array e in quello corretto elimino
-            let nuovoArrayTemporaneo =[];
             let idtEntita = e.target.value;
             for (i=0; i<tasks.length; i++){
                 if (idtEntita != tasks[i].idt){
@@ -142,6 +152,19 @@ pulsantiNelBody.addEventListener("click", (e)=>{
             tasks = nuovoArrayTemporaneo;
             salvaInLocalStorage()
             aggiornaDaCompletare();
+            break;
+        case "conferma":
+            console.log("confermo!");
+            let idtEntitaConfermata = e.target.value;
+            for (i=0; i<tasks.length; i++){
+                if (idtEntitaConfermata != tasks[i].idt){
+                    nuovoArrayTemporaneo.push(tasks[i]);
+                } else {
+                    tasksCompletati.push(tasks[i]);
+                }
+            };
+            tasks = nuovoArrayTemporaneo;
+            salvaInLocalStorage();
             break;
         default:
             // console.log('non faccio nulla');

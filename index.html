@@ -28,11 +28,14 @@
 
     <div id="sezioneCompletati">
         <h1>COMPLETATI</h1>
+        <ul id="listaCompletati">
+        </ul>
     </div>
 
 <script>
-// code da prendere nel dom
+// cose da prendere nel dom
 let listaDaCompletare = document.getElementById('listaDaCompletare');// prendo l'input della sez. DA COMPLETARE
+let listaCompletati = document.getElementById('listaCompletati');
 let inputDescrizione = document.getElementById("descrizioneTask"); //prendo l'input della descrizione
 let intestazioneData = document.getElementById("intestazioneData");
 let intestazioneDescrizione = document.getElementById("intestazioneDescrizione");
@@ -54,8 +57,7 @@ class task {
 let tasks =[];
 //array per contenere i tasks
 let tasksCompletati =[];
-// array temporaneo
-let nuovoArrayTemporaneo =[];
+
 
 //aggiornare la voce da completare
 function aggiornaDaCompletare(){
@@ -74,7 +76,7 @@ function aggiornaDaCompletare(){
         elimina.textContent = "elimina";
         elimina.className ="elimina";
         elimina.value = `${tasks[i].idt}`; //passo l'ID della riga in modo da identificarla
-        righe.textContent = `${tasks[i].data}  ${tasks[i].descrizione}` ;
+        righe.textContent = `${tasks[i].data}  ${tasks[i].descrizione} ` ;
 
 
         righe.appendChild(elimina);
@@ -83,6 +85,25 @@ function aggiornaDaCompletare(){
     };
 };
 aggiornaDaCompletare();
+
+//aggiornare i completati
+function aggiornaCompletati(){
+        tasksCompletati = JSON.parse(localStorage.getItem("tasksCompletati"))|| []; //vedo il localStorage se è vuoto lo inizializzo come vuoto
+        listaCompletati.innerHTML = ""; //devo svuotare sempre la lista prima di aggiornarla per evitare doppioni
+        for ( let i = 0; i < tasksCompletati.length; i++ ){ //ciclo per prendere tutti i dati dell'array e stamparli
+        let righe = document.createElement("li");
+        let svuota = document.createElement("button");
+
+        svuota.textContent = "svuota";
+        svuota.className ="svuota";
+        svuota.value = `${tasksCompletati[i].idt}`; //passo l'ID della riga in modo da identificarla
+        righe.textContent = `${tasksCompletati[i].data}  ${tasksCompletati[i].descrizione} ` ;
+
+        righe.appendChild(svuota);
+        listaCompletati.appendChild(righe);
+                };
+            };
+aggiornaCompletati()
 
         //salvare in localStorage convertendo l'array in stringa
         function salvaInLocalStorage(){
@@ -140,8 +161,10 @@ pulsantiNelBody.addEventListener("click", (e)=>{
     switch (e.target.className){
         
         //ELIMINARE LE RIGHE
-        case "elimina": // devo prendere l'id passare tutti gli id dell'array e in quello corretto elimino
+        case "elimina":{ // devo prendere l'id passare tutti gli id dell'array e in quello corretto elimino
             let idtEntita = e.target.value;
+            // array temporaneo
+            let nuovoArrayTemporaneo =[];
             for (i=0; i<tasks.length; i++){
                 if (idtEntita != tasks[i].idt){
                     nuovoArrayTemporaneo.push(tasks[i]);
@@ -152,9 +175,10 @@ pulsantiNelBody.addEventListener("click", (e)=>{
             tasks = nuovoArrayTemporaneo;
             salvaInLocalStorage()
             aggiornaDaCompletare();
-            break;
-        case "conferma":
-            console.log("confermo!");
+            break; };
+        case "conferma":{
+            // array temporaneo
+            let nuovoArrayTemporaneo =[];
             let idtEntitaConfermata = e.target.value;
             for (i=0; i<tasks.length; i++){
                 if (idtEntitaConfermata != tasks[i].idt){
@@ -165,7 +189,25 @@ pulsantiNelBody.addEventListener("click", (e)=>{
             };
             tasks = nuovoArrayTemporaneo;
             salvaInLocalStorage();
+            aggiornaDaCompletare();
+            aggiornaCompletati();
             break;
+            };
+             case "svuota":{ // devo prendere l'id passare tutti gli id dell'array e in quello corretto elimino
+            let idtEntita = e.target.value;
+            // array temporaneo
+            let nuovoArrayTemporaneo =[];
+            for (i=0; i<tasksCompletati.length; i++){
+                if (idtEntita != tasksCompletati[i].idt){
+                    nuovoArrayTemporaneo.push(tasksCompletati[i]);
+                } else {
+                    // console.log("non aggiungo...");
+                }
+            };
+            tasksCompletati = nuovoArrayTemporaneo;
+            salvaInLocalStorage()
+            aggiornaCompletati();
+            break; };
         default:
             // console.log('non faccio nulla');
     }

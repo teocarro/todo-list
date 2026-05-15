@@ -1,0 +1,13 @@
+
+/* centrare le due liste */
+#listaDaCompletare, #listaCompletati {
+    display: flex;
+    place-self: anchor-center;
+    flex-direction: column;
+}
+
+/* centrare il resto del contenuto */
+#titolo, #sezioneNuovo, #daCompletare, #intestazioni, #completati {
+    display: flex;
+    justify-content: center;
+}

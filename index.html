@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -18,16 +19,19 @@
     </div>
 
     <div id="sezioneInProgress">
-        <h1>DA COMPLETARE</h1>
+        <h1 id="daCompletare">DA COMPLETARE</h1>
 
-        <button id="intestazioneData" title="clicca per ordinare in modo crescente/decrescente">DATA</button><span id="intestazioneDescrizione">Descrizione TASK</span>
-
+        <div id="intestazioni">
+            <button id="intestazioneData" title="clicca per ordinare in modo crescente/decrescente">DATA</button>
+            <span id="intestazioneDescrizione">Descrizione TASK</span>
+        </div>
+        
         <ul id="listaDaCompletare">
         </ul>
     </div>
 
     <div id="sezioneCompletati">
-        <h1>COMPLETATI</h1>
+        <h1 id="completati">COMPLETATI</h1>
         <ul id="listaCompletati">
         </ul>
     </div>

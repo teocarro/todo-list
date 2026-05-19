@@ -8,233 +8,33 @@
 </head>
 <body>
 
-    <div id="titolo">
-        <h1>TITOLO</h1>
+<div id="titolo">
+    <h1>C_Todo SueList</h1>
+</div>
+
+<div id="sezioneNuovo">
+    <input type="date" id="dataTask">
+    <input type="text" id="descrizioneTask">
+    <button id="pulsanteAggiungi">Aggiungi</button>
+</div>
+
+<div id="sezioneInProgress">
+    <h1 id="daCompletare">DA COMPLETARE</h1>
+
+    <div id="intestazioni">
+        <button id="intestazioneData" title="clicca per ordinare in modo crescente/decrescente"></button>
+        <span id="intestazioneDescrizione">Descrizione TASK</span>
     </div>
 
-    <div id="sezioneNuovo">
-        <input type="date" id="dataTask">
-        <input type="text" id="descrizioneTask">
-        <button id="pulsanteAggiungi">Aggiungi</button>
-    </div>
+    <ul id="listaDaCompletare"></ul>
+</div>
 
-    <div id="sezioneInProgress">
-        <h1 id="daCompletare">DA COMPLETARE</h1>
+<div id="sezioneCompletati">
+    <h1 id="completati">COMPLETATI</h1>
+    <ul id="listaCompletati"></ul>
+</div>
 
-        <div id="intestazioni">
-            <button id="intestazioneData" title="clicca per ordinare in modo crescente/decrescente">DATA</button>
-            <span id="intestazioneDescrizione">Descrizione TASK</span>
-        </div>
-        
-        <ul id="listaDaCompletare">
-        </ul>
-    </div>
-
-    <div id="sezioneCompletati">
-        <h1 id="completati">COMPLETATI</h1>
-        <ul id="listaCompletati">
-        </ul>
-    </div>
-
-<script>
-// cose da prendere nel dom
-let listaDaCompletare = document.getElementById('listaDaCompletare');// prendo l'input della sez. DA COMPLETARE
-let listaCompletati = document.getElementById('listaCompletati');
-let inputDescrizione = document.getElementById("descrizioneTask"); //prendo l'input della descrizione
-let intestazioneData = document.getElementById("intestazioneData");
-let intestazioneDescrizione = document.getElementById("intestazioneDescrizione");
-let inputData= document.getElementById("dataTask"); //prendo l'input di data
-let pulsantiNelBody = document.querySelector("body"); //ascolto tutti i pulsanti nel body
-let ordineDataCrescente = true; //controllare l'ordinamento crescente
-
-
-//definito la struttura dell'oggetto per le righe che chiamerò task
-class task {
-    constructor(idt, data, descrizione){
-        this.idt = idt;
-        this.data = data;
-        this.descrizione = descrizione;
-    }
-};
-
-//array per contenere i tasks
-let tasks =[];
-//array per contenere i tasks
-let tasksCompletati =[];
-
-
-//aggiornare la voce da completare
-function aggiornaDaCompletare(){
-    
-    tasks = JSON.parse(localStorage.getItem("tasks"))|| []; //vedo il localStorage se è vuoto lo inizializzo come vuoto
-    listaDaCompletare.innerHTML = ""; //devo svuotare sempre la lista prima di aggiornarla per evitare doppioni
-    for ( let i = 0; i < tasks.length; i++ ){ //ciclo per prendere tutti i dati dell'array e stamparli
-        let righe = document.createElement("li");
-        let elimina = document.createElement("button");
-        let conferma = document.createElement("button");
-
-        conferma.textContent = "conferma";
-        conferma.className ="conferma";
-        conferma.value = `${tasks[i].idt}`;
-
-        elimina.textContent = "elimina";
-        elimina.className ="elimina";
-        elimina.value = `${tasks[i].idt}`; //passo l'ID della riga in modo da identificarla
-        righe.textContent = `${tasks[i].data}  ${tasks[i].descrizione} ` ;
-
-
-        righe.appendChild(elimina);
-        righe.appendChild(conferma);
-        listaDaCompletare.appendChild(righe);
-    };
-};
-aggiornaDaCompletare();
-
-//aggiornare i completati
-function aggiornaCompletati(){
-        tasksCompletati = JSON.parse(localStorage.getItem("tasksCompletati"))|| []; //vedo il localStorage se è vuoto lo inizializzo come vuoto
-        listaCompletati.innerHTML = ""; //devo svuotare sempre la lista prima di aggiornarla per evitare doppioni
-        for ( let i = 0; i < tasksCompletati.length; i++ ){ //ciclo per prendere tutti i dati dell'array e stamparli
-        let righe = document.createElement("li");
-        let svuota = document.createElement("button");
-
-        svuota.textContent = "svuota";
-        svuota.className ="svuota";
-        svuota.value = `${tasksCompletati[i].idt}`; //passo l'ID della riga in modo da identificarla
-        righe.textContent = `${tasksCompletati[i].data}  ${tasksCompletati[i].descrizione} ` ;
-
-        righe.appendChild(svuota);
-        listaCompletati.appendChild(righe);
-                };
-            };
-aggiornaCompletati()
-
-        //salvare in localStorage convertendo l'array in stringa
-        function salvaInLocalStorage(){
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            localStorage.setItem("tasksCompletati", JSON.stringify(tasksCompletati));
-            //riprendo i dati del local storage e li traduto da stringa a array
-            tasks = JSON.parse(localStorage.getItem("tasks"));
-            tasksCompletati = JSON.parse(localStorage.getItem("tasksCompletati"));
-        };
-
-//pulsante per aggiungere
-const pulsanteAggiungi = document.getElementById("pulsanteAggiungi"); //preso pulsante principale per aggiungere
-pulsanteAggiungi.addEventListener('click', ()=> { //ascoltato il click su aggiungi
-   
-    //genero l'id
-    let data = new Date();
-    let giorno, mese, anno, ora, minuti, secondi, mSecondi;
-    giorno = data.getDate();
-    mese = data.getMonth() + 1;
-    anno = data.getFullYear();
-    ora = data.getHours();
-    minuti = data.getMinutes();
-    secondi = data.getSeconds();
-    mSecondi = data.getMilliseconds();
-
-    let idt =`${giorno}${mese}${anno}${ora}${minuti}${secondi}${mSecondi}`;
-    // console.log(idt);
-
-    //prendo i valori dalla data e della decrizione
-    let dataTask = inputData.value;// prendo il valore della data
-    let descrizioneTask = inputDescrizione.value;//prendo il valore della descrizione
-    if (descrizioneTask != ''){ //controllo se la decrizione è valorizzata
-        // presi i valori li passo al costruttore
-        let newTask = new task (idt, dataTask, descrizioneTask);
-        // e aggiungo il nuovo task all'array dei task
-        tasks.push(newTask);
-        salvaInLocalStorage();
-        //funzione per aggiorare le righe da completare
-        aggiornaDaCompletare();
-        inputDescrizione.value = "";
-        inputData.value = "";
-        
-        
-        
-    } else { //se la descrizione è vuota
-        alert('Almeno la descrizione deve essere valorizzata');
-    }
-});
-
-pulsantiNelBody.addEventListener("click", (e)=>{
-    // console.log(e.target.className); //per puntare al nome della classe del clic
-    // console.log(e.target.id); 
-    // console.log(e.target.className);
-
-    switch (e.target.className){
-        
-        //ELIMINARE LE RIGHE
-        case "elimina":{ // devo prendere l'id passare tutti gli id dell'array e in quello corretto elimino
-            let idtEntita = e.target.value;
-            // array temporaneo
-            let nuovoArrayTemporaneo =[];
-            for (i=0; i<tasks.length; i++){
-                if (idtEntita != tasks[i].idt){
-                    nuovoArrayTemporaneo.push(tasks[i]);
-                } else {
-                    // console.log("non aggiungo...");
-                }
-            };
-            tasks = nuovoArrayTemporaneo;
-            salvaInLocalStorage()
-            aggiornaDaCompletare();
-            break; };
-        case "conferma":{
-            // array temporaneo
-            let nuovoArrayTemporaneo =[];
-            let idtEntitaConfermata = e.target.value;
-            for (i=0; i<tasks.length; i++){
-                if (idtEntitaConfermata != tasks[i].idt){
-                    nuovoArrayTemporaneo.push(tasks[i]);
-                } else {
-                    tasksCompletati.push(tasks[i]);
-                }
-            };
-            tasks = nuovoArrayTemporaneo;
-            salvaInLocalStorage();
-            aggiornaDaCompletare();
-            aggiornaCompletati();
-            break;
-            };
-             case "svuota":{ // devo prendere l'id passare tutti gli id dell'array e in quello corretto elimino
-            let idtEntita = e.target.value;
-            // array temporaneo
-            let nuovoArrayTemporaneo =[];
-            for (i=0; i<tasksCompletati.length; i++){
-                if (idtEntita != tasksCompletati[i].idt){
-                    nuovoArrayTemporaneo.push(tasksCompletati[i]);
-                } else {
-                    // console.log("non aggiungo...");
-                }
-            };
-            tasksCompletati = nuovoArrayTemporaneo;
-            salvaInLocalStorage()
-            aggiornaCompletati();
-            break; };
-        default:
-            // console.log('non faccio nulla');
-    }
-
-    switch (e.target.id){
-        case "intestazioneData":
-            if (ordineDataCrescente) {
-                tasks.sort((a, b) => a.data.localeCompare(b.data));
-            } else {
-                tasks.sort((a, b) => b.data.localeCompare(a.data));
-            }
-
-            ordineDataCrescente = !ordineDataCrescente;
-
-            salvaInLocalStorage();
-            aggiornaDaCompletare();
-            break;
-        break;
-    }
-})
-
-
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>

@@ -1,13 +1,442 @@
-
-/* centrare le due liste */
-#listaDaCompletare, #listaCompletati {
-    display: flex;
-    place-self: anchor-center;
-    flex-direction: column;
+/* reset base */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* centrare il resto del contenuto */
-#titolo, #sezioneNuovo, #daCompletare, #intestazioni, #completati {
+/* body */
+body{
+    background-color: #f5f7fb;
+    color: #222;
+    min-height: 100vh;
+    padding: 30px;
+}
+
+/* titolo */
+#titolo{
     display: flex;
     justify-content: center;
+    margin-bottom: 35px;
+}
+
+/* barra titolo */
+#titolo h1{
+    width: 100%;
+    max-width: 1100px;
+    text-align: center;
+    padding: 25px;
+    border-radius: 20px;
+    color: white;
+    font-size: 38px;
+    letter-spacing: 2px;
+
+    background: linear-gradient(135deg, #ff8a00, #a100ff);
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* sezione nuovo task */
+#sezioneNuovo{
+    background-color: white;
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    gap: 15px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+/* input */
+#sezioneNuovo input{
+    padding: 14px;
+
+    border-radius: 12px;
+
+    border: 1px solid #ddd;
+
+    font-size: 15px;
+
+    transition: 0.2s;
+}
+
+/* input focus */
+#sezioneNuovo input:focus{
+    outline: none;
+
+    border-color: #a100ff;
+
+    box-shadow: 0 0 0 4px rgba(161,0,255,0.12);
+}
+
+/* bottone aggiungi */
+#pulsanteAggiungi{
+    padding: 14px 22px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: linear-gradient(135deg, #ff8a00, #a100ff);
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+/* hover aggiungi */
+#pulsanteAggiungi:hover{
+    transform: translateY(-2px);
+
+    opacity: 0.92;
+}
+
+/* sezioni principali */
+#sezioneInProgress,
+#sezioneCompletati{
+
+    background-color: white;
+
+    max-width: 1100px;
+
+    margin: 30px auto;
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+/* titoli sezioni */
+#daCompletare,
+#completati{
+    text-align: center;
+
+    margin-bottom: 30px;
+
+    font-size: 34px;
+}
+
+/* intestazioni */
+#intestazioni{
+
+    display: grid;
+
+    grid-template-columns: 320px 1fr 150px 150px;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 2px solid #f0f0f0;
+}
+
+/* bottone ordinamento */
+#intestazioneData{
+
+    border: none;
+
+    background-color: #f3ecff;
+
+    color: #5a16c5;
+
+    padding: 14px 18px;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 15px;
+
+    transition: 0.2s;
+
+    justify-self: start;
+
+    position: relative;
+}
+
+/* freccina */
+#intestazioneData::before{
+    content: "↕ ";
+}
+
+/* hover ordinamento */
+#intestazioneData:hover{
+
+    background-color: #e8dbff;
+
+    transform: scale(1.02);
+}
+
+/* piccolo hint sotto */
+#intestazioneData::after{
+    content: "clicca per cambiare";
+
+    position: absolute;
+
+    left: 10px;
+
+    bottom: -22px;
+
+    font-size: 12px;
+
+    color: #8c8c8c;
+}
+
+/* testo descrizione */
+#intestazioneDescrizione{
+    font-size: 20px;
+
+    font-weight: bold;
+
+    color: #333;
+
+    padding-left: 20px;
+}
+
+/* liste */
+#listaDaCompletare,
+#listaCompletati{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    list-style: none;
+}
+
+/* righe task */
+#listaDaCompletare li,
+#listaCompletati li{
+
+    background-color: #fafafa;
+
+    border: 1px solid #ececec;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    display: grid;
+
+    /* data | descrizione | elimina | conferma */
+    grid-template-columns: 140px 1fr 150px 150px;
+
+    align-items: center;
+
+    gap: 20px;
+
+    transition: 0.2s;
+}
+
+/* hover task */
+#listaDaCompletare li:hover,
+#listaCompletati li:hover{
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* data task */
+.dataTask{
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: #f3ecff;
+
+    border-radius: 16px;
+
+    padding: 10px;
+
+    min-height: 95px;
+}
+
+/* giorno */
+.giornoTask{
+    font-size: 42px;
+
+    font-weight: bold;
+
+    color: #5a16c5;
+
+    line-height: 1;
+}
+
+/* mese anno */
+.meseTask{
+    margin-top: 5px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    color: #5a16c5;
+}
+
+/* descrizione */
+.descrizioneTask{
+    font-size: 26px;
+
+    font-weight: 500;
+}
+
+/* pulsanti */
+button{
+    transition: 0.2s;
+}
+
+/* elimina */
+.elimina{
+
+    border: none;
+
+    background-color: #ff4d4d;
+
+    color: white;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 16px;
+
+    justify-self: center;
+}
+
+.elimina::before{
+    content: "✖ ";
+}
+
+.elimina:hover{
+    background-color: #e43d3d;
+
+    transform: scale(1.03);
+}
+
+/* conferma */
+.conferma{
+
+    border: none;
+
+    background-color: #22c55e;
+
+    color: white;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 16px;
+
+    justify-self: center;
+}
+
+.conferma::before{
+    content: "✔ ";
+}
+
+.conferma:hover{
+    background-color: #16a34a;
+
+    transform: scale(1.03);
+}
+
+/* svuota */
+.svuota{
+
+    border: none;
+
+    background-color: #ff9800;
+
+    color: white;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    justify-self: center;
+}
+
+.svuota::before{
+    content: "🗑 ";
+}
+
+.svuota:hover{
+    background-color: #e68900;
+}
+
+.dataTask{
+    font-weight: bold;
+    font-size: 18px;
+    color: #5a16c5;
+}
+
+.descrizioneTask{
+        font-size: 16px;
+        color: #333;
+}
+
+
+/* mobile */
+@media(max-width:850px){
+
+    #sezioneNuovo{
+        flex-direction: column;
+    }
+
+    #listaDaCompletare li,
+    #listaCompletati li{
+
+        grid-template-columns: 1fr;
+
+        text-align: center;
+    }
+
+    #intestazioni{
+        display: none;
+    }
+
 }
